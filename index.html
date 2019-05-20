@@ -1,0 +1,37 @@
+<!DOCTYPE html> <meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"
+/>
+<script
+  nomodule
+  src="/node_modules/@babel/polyfill/dist/polyfill.min.js"
+></script>
+<script>
+  // window.ShadyDOM = { force: true };
+</script>
+<script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
+<script type="module" src="/auto-pass-element.js"></script>
+<auto-pass id="autoPass"></auto-pass>
+<div id="shady"></div>
+<script type="module">
+  import { storePassword } from "/auto-pass.js";
+  shady.attachShadow({ mode: "open" });
+  shady.shadowRoot.innerHTML = `
+    <form id="form" action="submitted">
+      <input name="user" id="username" />
+      <input name="password" id="password" type="password" />
+      <input type="submit" id="button"></input>
+    </form>`;
+  autoPass.connectUsernameInput(shady.shadowRoot.getElementById("username"));
+  autoPass.connectPasswordInput(shady.shadowRoot.getElementById("password"));
+
+  shady.shadowRoot.getElementById("form").addEventListener("submit", e => {
+    storePassword();
+    // e.preventDefault();
+    // window.location.href = "/submitted";
+  });
+</script>
+
+<span id="browser-sync-binding"></span>
