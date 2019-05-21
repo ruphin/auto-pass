@@ -1,17 +1,23 @@
+const SUBMIT = "submit";
+const INPUT = "input";
 const username = {};
 const password = {};
-const submitButton = document.createElement("input");
 const proxyForm = document.createElement("form");
-username.proxy = username.input = document.createElement("input");
-password.proxy = password.input = document.createElement("input");
+const submitListener = () => storePassword();
+const createInput = () => document.createElement("input");
+const submitButton = createInput();
+let realForm;
+submitButton.type = SUBMIT;
+username.proxy = username.input = createInput();
+password.proxy = password.input = createInput();
 
-submitButton.type = "submit";
 proxyForm.appendChild(username.proxy);
 proxyForm.appendChild(password.proxy);
 proxyForm.appendChild(submitButton);
-proxyForm.addEventListener("submit", e => {
+proxyForm.method = "post";
+proxyForm.style = "visibility: hidden; height: 0; width: 0";
+proxyForm.addEventListener(SUBMIT, e => {
   e.preventDefault();
-  return false;
 });
 
 export const attachProxyForm = hostElement => {
@@ -36,38 +42,43 @@ export const connectPasswordInput = input => {
     password,
     input
   );
+  if (realForm) {
+    realForm.removeEventListener(SUBMIT, submitListener);
+  }
+  realForm = input.form;
+  if (realForm) {
+    realForm.addEventListener(SUBMIT, submitListener);
+  }
 };
 
 const connect = (field, newInput) => {
   const { input, inputListener, proxy, proxyListener } = field;
-  input.removeEventListener("change", inputListener);
-  proxy.removeEventListener("change", proxyListener);
-  const { id, type, name } = (field.input = newInput);
-  Object.assign(field.proxy, { id, type, name });
+  input.removeEventListener(INPUT, inputListener);
+  proxy.removeEventListener(INPUT, proxyListener);
+  const { id, type } = (field.input = newInput);
+  Object.assign(field.proxy, { id, type });
   synchronise(field);
 };
 
 const synchronise = field => {
   const { input, proxy } = field;
-  const inputValue = input.value;
+  field.proxyListener = attachListener(input, proxy);
+  field.inputListener = attachListener(proxy, input);
+};
+
+const attachListener = (input, proxy) => {
+  const listener = () => {
+    const proxyValue = proxy.value;
+    if (input.value !== proxyValue) {
+      input.value = proxyValue;
+    }
+  };
   const proxyValue = proxy.value;
-  const inputListener = () => {
-    if (proxy.value !== input.value) {
-      proxy.value = input.value;
-    }
-  };
-  const proxyListener = () => {
-    if (input.value !== proxy.value) {
-      input.value = proxy.value;
-    }
-  };
-  if (!proxyValue && inputValue) {
-    proxy.value = input.value;
+  if (!input.value && proxyValue) {
+    input.value = proxyValue;
   }
-  if (!inputValue && proxyValue) {
-    input.value = proxy.value;
-  }
-  input.addEventListener("input", inputListener);
-  proxy.addEventListener("input", proxyListener);
-  Object.assign(field, { inputListener, proxyListener });
+
+  proxy.addEventListener(INPUT, listener);
+
+  return listener;
 };

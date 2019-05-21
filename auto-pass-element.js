@@ -7,7 +7,6 @@ import {
 
 export class AutoPass extends HTMLElement {
   connectedCallback() {
-    // this.style = "display: none";
     attachProxyForm(this);
   }
   storePassword() {

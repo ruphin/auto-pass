@@ -46,7 +46,16 @@ const browserSyncPlugin =
     },
     server: {
       baseDir: ["dist", "."],
-      middleware: [historyApiFallback()]
+      middleware: [
+        historyApiFallback(),
+        function(req, res, next) {
+          if (req.method.toUpperCase() == "POST") {
+            console.log("[POST => GET] : " + req.url);
+            req.method = "GET";
+          }
+          next();
+        }
+      ]
     },
     files: ["./*"]
   });
