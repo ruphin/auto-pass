@@ -45,17 +45,8 @@ const browserSyncPlugin =
       }
     },
     server: {
-      baseDir: ["dist", "."],
-      middleware: [
-        historyApiFallback(),
-        function(req, res, next) {
-          if (req.method.toUpperCase() == "POST") {
-            console.log("[POST => GET] : " + req.url);
-            req.method = "GET";
-          }
-          next();
-        }
-      ]
+      baseDir: ["demo", "."],
+      middleware: [historyApiFallback()]
     },
     files: ["./*"]
   });
@@ -99,17 +90,18 @@ const bundleConfig = ({
 
 const config = [
   bundleConfig({
-    input: "auto-pass-element.js",
-    output: "dist/index.nomodule.js",
-    transpiled: true,
-    format: "iife"
+    input: "auto-pass.js",
+    output: "dist/auto-pass.js",
+    transpiled: false,
+    minified: false,
+    format: "esm"
   }),
   bundleConfig({
-    input: "auto-pass-element.js",
-    output: "dist/index.js",
-    transpiled: false,
-    minified: true,
-    format: "esm"
+    input: "auto-pass.js",
+    output: "dist/auto-pass.es5.js",
+    transpiled: true,
+    minified: false,
+    format: "iife"
   })
 ];
 

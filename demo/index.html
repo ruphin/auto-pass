@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"
+/>
+
+<script
+  nomodule
+  src="/node_modules/@babel/polyfill/dist/polyfill.min.js"
+></script>
+
+<script>
+  // window.ShadyDOM = { force: true };
+</script>
+
+<script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
+<script nomodule src="./my-form.es5.js"></script>
+<script type="module" src="./my-form.js"></script>
+<script type="module">
+  import { attachProxyForm } from "./auto-pass.js";
+  attachProxyForm(document.getElementById("proxyForm"));
+</script>
+
+<div id="proxyForm"></div>
+
+<my-form></my-form>
