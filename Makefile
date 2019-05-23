@@ -12,4 +12,4 @@ build:
 
 .PHONY: production
 production: build
-	docker build -t ruphin/autopass .
+	docker build -t ruphin/auto-pass .
