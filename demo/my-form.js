@@ -1,4 +1,4 @@
-import { connectUsername, connectPassword } from "./auto-pass.js";
+import { connectUsername, connectPassword } from "../auto-pass.js";
 
 const html = t => t.join("");
 
